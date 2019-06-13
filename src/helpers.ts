@@ -6,51 +6,26 @@ const MAX_INT = Number.MAX_SAFE_INTEGER
  * Update a map object by adding the given word to its word list.
  */
 export function addByLength(map: LengthMap, word: string): void {
-  const list = map[word.length] || []
+  const list = map.get(word.length) || []
   list.push(word)
-  map[word.length] = list
-}
-
-/**
- * Sort a map's lists and return a new object with keys sorted by length.
- */
-export function sortedMap(map: LengthMap): LengthMap {
-  const entries = Object.entries(map)
-  entries.sort((a, b) => Number(a[0]) - Number(b[0]))
-
-  const _map = entries.reduce((m, entry) => {
-    const [length, wordList] = entry
-    const wordLength = Number(length)
-    wordList.sort()
-    m[wordLength] = wordList
-    return m
-  }, {} as LengthMap)
-
-  return _map
-}
-
-/**
- * Freeze a map and all its lists.
- */
-export function freezeMap(map: LengthMap): ReadonlyLengthMap {
-  map = Object.freeze(map)
-  Object.keys(map).forEach(key => Object.freeze(map[Number(key)]))
-  return map
+  map.set(word.length, list)
 }
 
 /**
  * Add words to the map using a list builder.
  */
 export function fromBuilder(map: LengthMap, builder: ListBuilder, onWord?: OnWord): Promise<void> {
+  // If onWord is specified, use it to determine which words get added.
   if (typeof onWord === 'function') {
    return builder((word) => {
       const _word = onWord(word)
-      if (typeof _word === 'string') {
+      if (typeof _word === 'string' && _word.length > 0) {
         addByLength(map, _word)
       }
     })
   }
 
+  // No onWord specified, just run the builder.
   return builder(addByLength.bind(null, map))
 }
 
@@ -62,18 +37,55 @@ export function toPromise<T>(value: PromiseLike<T>): Promise<T> {
 }
 
 /**
+ *
+ */
+export function toReadonlyLengthMap(map: LengthMap): ReadonlyLengthMap
+/**
+ *
+ */
+export function toReadonlyLengthMap(map: LengthMap, length: number): ReadonlyLengthMap
+/**
+ *
+ */
+export function toReadonlyLengthMap(map: LengthMap, min: number, max: number): ReadonlyLengthMap
+/**
+ *
+ */
+export function toReadonlyLengthMap(map: LengthMap, min?: number, max?: number): ReadonlyLengthMap {
+  const _min = typeof min === 'number' ? min : 1
+  const _max = typeof max === 'number' ? max : MAX_INT
+
+  // Create an array from the map's entries.
+  const entries = [...map.entries()]
+
+  // Sort the entries.
+  entries.sort(([a],  [b]) => a - b)
+
+  // Create a readonly object from the given map.
+  const readonlyLengthMap = entries.reduce((_map, [length, list]) => {
+    if (length >= _min && length <= _max) {
+      _map[length] = Object.freeze(list)
+    }
+    return _map
+  }, {} as {[key: number]: readonly string[]})
+
+  return Object.freeze(readonlyLengthMap) as ReadonlyLengthMap
+}
+
+/**
  * Generate a length stats object.
  */
-export function byLengthStats(map: ReadonlyLengthMap): LengthStats {
+export function byLengthStats(map: LengthMap): LengthStats {
   let totalWords = 0
   let shortestWord = MAX_INT
   let longestWord = 0
 
+  // Get the entries from the map.
+  const entries = [...map.entries()]
+
   // Build a map of { word length => number of words }.
-  const entries = Object.entries(map)
   const byLength = entries.reduce((map, entry) => {
-    const [length, wordList] = entry
-    const wordLength = Number(length)
+    const [wordLength, wordList] = entry
     map[wordLength] = wordList.length
 
     totalWords += wordList.length

@@ -8,11 +8,10 @@ import {
 
 import {
   addByLength,
-  sortedMap,
-  freezeMap,
   fromBuilder,
   byLengthStats,
-  toPromise
+  toPromise,
+  toReadonlyLengthMap
 } from './helpers'
 
 type ConstructorValue = string[]|ListBuilder|PromiseLike<string[]>
@@ -21,7 +20,7 @@ type ConstructorValue = string[]|ListBuilder|PromiseLike<string[]>
  *
  */
 export class WordsByLengthView {
-  private _byLengthMap: ReadonlyLengthMap
+  private _byLengthMap: LengthMap
   private _promise: Promise<void>
 
   /**
@@ -44,32 +43,23 @@ export class WordsByLengthView {
    */
   constructor(value: ConstructorValue, onWord?: OnWord) {
     // Assign a temporary value to the member variable.
-    this._byLengthMap = {}
-    // Create a non-readonly map to populate.
-    const byLengthMap: LengthMap = {}
+    this._byLengthMap = new Map()
     // Create an alias function bound to the length map.
-    const _addByLength = addByLength.bind(null, byLengthMap)
+    const _addByLength = addByLength.bind(null, this._byLengthMap)
 
     // Build map synchronously (string[]).
     if (Array.isArray(value)) {
       value.forEach(_addByLength)
-      this._byLengthMap = freezeMap(sortedMap(byLengthMap))
       this._promise = Promise.resolve()
 
     // Build map asynchronously (ListBuilder).
     } else if (typeof value === 'function') {
-      this._promise = fromBuilder(byLengthMap, value, onWord)
-        .then(() => {
-          this._byLengthMap = freezeMap(sortedMap(byLengthMap))
-        })
+      this._promise = fromBuilder(this._byLengthMap, value, onWord)
 
     // Build map asynchronously (PromiseLike<string[]>).
     } else {
       this._promise = toPromise(value)
         .then(list => list.forEach(_addByLength))
-        .then(() => {
-          this._byLengthMap = freezeMap(sortedMap(byLengthMap))
-        })
     }
   }
 
@@ -102,30 +92,18 @@ export class WordsByLengthView {
     // Handle no arguments overload.
     if (typeof value !== 'number') {
       // Return a copy.
-      return this._byLengthMap
+      return toReadonlyLengthMap(this._byLengthMap)
     }
 
     // Handle length overload.
     if (typeof max !== 'number') {
       const length = value
-      return this._byLengthMap[length] || Object.freeze([])
+      return this._byLengthMap.get(length) || Object.freeze([])
     }
 
     // Handle min, max overload.
     const min = value
-    const entries = Object.entries(this._byLengthMap)
-
-    // Create a map of only the keys in [min, max].
-    const map = entries.reduce((_map, entry) => {
-      const [length, wordList] = entry
-      const wordLength = Number(length)
-      if (wordLength >= min && wordLength <= max) {
-        _map[wordLength] = <string[]>wordList
-      }
-      return _map
-    }, {} as LengthMap)
-
-    return Object.freeze(map)
+    return toReadonlyLengthMap(this._byLengthMap, min, max)
   }
 
   /**

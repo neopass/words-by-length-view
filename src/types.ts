@@ -8,5 +8,5 @@ export interface LengthStats {
   byLength: {[length: number]: number}
 }
 
-export type LengthMap = {[length: number]: string[]}
+export type LengthMap = Map<number, string[]>
 export type ReadonlyLengthMap = Readonly<{[length: number]: readonly string[]}>
