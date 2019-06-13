@@ -94,16 +94,17 @@ export class WordsByLengthView {
   get(min?: number, max?: number): ReadonlyLengthMap {
     // Handle no arguments overload.
     if (typeof min !== 'number') {
-      // Return a copy.
+      // Return the entire map.
       return toReadonlyLengthMap(this._byLengthMap, 1, MAX_INT)
     }
 
     // Handle length overload.
     if (typeof max !== 'number') {
+      // Return items matching min.
       return toReadonlyLengthMap(this._byLengthMap, min, min)
     }
 
-    // Handle min, max overload.
+    // Return items between min and max, inclusive.
     return toReadonlyLengthMap(this._byLengthMap, min, max)
   }
 
