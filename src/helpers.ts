@@ -1,6 +1,5 @@
 import { LengthMap, ReadonlyLengthMap, ListBuilder, OnWord, LengthStats } from './types'
-
-const MAX_INT = Number.MAX_SAFE_INTEGER
+import { MAX_INT } from './constants'
 
 /**
  * Update a map object by adding the given word to its word list.
