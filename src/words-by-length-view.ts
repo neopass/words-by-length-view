@@ -14,6 +14,8 @@ import {
   toReadonlyLengthMap
 } from './helpers'
 
+import { MAX_INT } from './constants'
+
 type ConstructorValue = string[]|ListBuilder|PromiseLike<string[]>
 
 /**
@@ -34,7 +36,7 @@ export class WordsByLengthView {
   /**
    * Construct the view from a list builder function.
    *
-   * @param builder the list builder function
+   * @param builder a list builder function
    * @param onWord an optional word processing function
    */
   constructor(builder: ListBuilder, onWord?: OnWord)
@@ -44,6 +46,7 @@ export class WordsByLengthView {
   constructor(value: ConstructorValue, onWord?: OnWord) {
     // Assign a temporary value to the member variable.
     this._byLengthMap = new Map()
+
     // Create an alias function bound to the length map.
     const _addByLength = addByLength.bind(null, this._byLengthMap)
 
@@ -80,7 +83,7 @@ export class WordsByLengthView {
   /**
    * Return all words of the given length.
    */
-  get(length: number): ReadonlyArray<string>
+  get(length: number): ReadonlyLengthMap
   /**
    * Return words of length [min, max].
    */
@@ -88,21 +91,19 @@ export class WordsByLengthView {
   /**
    * Overload handler.
    */
-  get(value?: number, max?: number): ReadonlyLengthMap|ReadonlyArray<string> {
+  get(min?: number, max?: number): ReadonlyLengthMap {
     // Handle no arguments overload.
-    if (typeof value !== 'number') {
+    if (typeof min !== 'number') {
       // Return a copy.
-      return toReadonlyLengthMap(this._byLengthMap)
+      return toReadonlyLengthMap(this._byLengthMap, 1, MAX_INT)
     }
 
     // Handle length overload.
     if (typeof max !== 'number') {
-      const length = value
-      return this._byLengthMap.get(length) || Object.freeze([])
+      return toReadonlyLengthMap(this._byLengthMap, min, min)
     }
 
     // Handle min, max overload.
-    const min = value
     return toReadonlyLengthMap(this._byLengthMap, min, max)
   }
 
