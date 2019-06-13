@@ -3,7 +3,7 @@ import {
   LengthStats,
   ListBuilder,
   OnWord,
-  LengthMap
+  LengthMap,
 } from './types'
 
 import {
@@ -11,7 +11,7 @@ import {
   fromBuilder,
   byLengthStats,
   toPromise,
-  toReadonlyLengthMap
+  toReadonlyLengthMap,
 } from './helpers'
 
 import { MAX_INT } from './constants'
@@ -92,20 +92,25 @@ export class WordsByLengthView {
    * Overload handler.
    */
   get(min?: number, max?: number): ReadonlyLengthMap {
+    let map: ReadonlyLengthMap
+
     // Handle no arguments overload.
     if (typeof min !== 'number') {
       // Return the entire map.
-      return toReadonlyLengthMap(this._byLengthMap, 1, MAX_INT)
-    }
+      map = toReadonlyLengthMap(this._byLengthMap, 1, MAX_INT)
 
     // Handle length overload.
-    if (typeof max !== 'number') {
+    } else if (typeof max !== 'number') {
       // Return items matching min.
-      return toReadonlyLengthMap(this._byLengthMap, min, min)
+      map = toReadonlyLengthMap(this._byLengthMap, min, min)
+
+    // Handle min/max overload.
+    } else {
+      // Return items between min and max, inclusive.
+      map = toReadonlyLengthMap(this._byLengthMap, min, max)
     }
 
-    // Return items between min and max, inclusive.
-    return toReadonlyLengthMap(this._byLengthMap, min, max)
+    return map
   }
 
   /**
