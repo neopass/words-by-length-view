@@ -1,0 +1,44 @@
+{
+  "name": "@neopass/words-view-by-length",
+  "version": "0.0.1",
+  "description": "Provide a word list organized by word length",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "tsc && babel lib --out-dir lib",
+    "clean": "rm -rf lib",
+    "watch": "tsc --watch",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "keywords": [
+    "neopass",
+    "word list",
+    "wordlist",
+    "view",
+    "length"
+  ],
+  "author": "James Abney",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.5",
+    "@babel/plugin-transform-runtime": "^7.4.4",
+    "@babel/preset-env": "^7.4.5",
+    "@babel/register": "^7.4.4",
+    "@neopass/wordlist": "^0.4.8",
+    "@types/node": "^12.0.2",
+    "typescript": "^3.5.1"
+  },
+  "dependencies": {
+    "@babel/runtime-corejs2": "^7.4.5"
+  },
+  "bin": {
+    "wordlist-gen": "bin/word-gen"
+  },
+  "files": [
+    "lib",
+    "utils",
+    "bin",
+    "scowl",
+    "default.txt"
+  ]
+}
