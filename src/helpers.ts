@@ -37,24 +37,9 @@ export function toPromise<T>(value: PromiseLike<T>): Promise<T> {
 }
 
 /**
- *
+ * Convert a length map to a ReadonlyLengthMap.
  */
-export function toReadonlyLengthMap(map: LengthMap): ReadonlyLengthMap
-/**
- *
- */
-export function toReadonlyLengthMap(map: LengthMap, length: number): ReadonlyLengthMap
-/**
- *
- */
-export function toReadonlyLengthMap(map: LengthMap, min: number, max: number): ReadonlyLengthMap
-/**
- *
- */
-export function toReadonlyLengthMap(map: LengthMap, min?: number, max?: number): ReadonlyLengthMap {
-  const _min = typeof min === 'number' ? min : 1
-  const _max = typeof max === 'number' ? max : MAX_INT
-
+export function toReadonlyLengthMap(map: LengthMap, min: number, max: number): ReadonlyLengthMap {
   // Create an array from the map's entries.
   const entries = [...map.entries()]
 
@@ -63,7 +48,7 @@ export function toReadonlyLengthMap(map: LengthMap, min?: number, max?: number):
 
   // Create a readonly object from the given map.
   const readonlyLengthMap = entries.reduce((_map, [length, list]) => {
-    if (length >= _min && length <= _max) {
+    if (length >= min && length <= max) {
       _map[length] = Object.freeze(list)
     }
     return _map
