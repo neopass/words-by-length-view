@@ -6,4 +6,5 @@ export {
   ListBuilder,
   OnWord,
   ReadonlyLengthMap,
+  ByLengthResult,
 } from './types'
