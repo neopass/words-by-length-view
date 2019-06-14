@@ -79,7 +79,7 @@ export function byLengthStats(map: ReadonlyLengthMap): LengthStats {
     return map
   }, {} as {[key: number]: number})
 
-  // If the shortest equals MAX, we didn't process any words.
+  // If the shortest equals MAX_INT, we didn't process any words.
   if (shortestWord === MAX_INT) { shortestWord = 0 }
 
   const stats = Object.freeze({
