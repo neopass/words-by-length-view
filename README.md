@@ -2,6 +2,8 @@
 
 Organizes a word list by the length of the words.
 
+For a source word list, see [@neopass/wordlist](https://www.npmjs.com/package/@neopass/wordlist)
+
 ```javascript
 import { WordsByLengthView } from '@neopass/words-by-length-view'
 
