@@ -2,10 +2,10 @@ export type OnWord = (word: string) => void|string
 export type ListBuilder = (onWord: OnWord) => Promise<void>
 
 export type LengthStats = {
-  totalWords: number
-  shortestWord: number
-  longestWord: number
-  byLength: {[length: number]: number}
+  readonly totalWords: number
+  readonly shortestWord: number
+  readonly longestWord: number
+  byLength: Readonly<{[length: number]: number}>
 }
 
 export type LengthMap = Map<number, string[]>
