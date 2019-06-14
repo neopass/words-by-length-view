@@ -93,26 +93,26 @@ export class WordsByLengthView {
    * Overload handler.
    */
   get(min?: number, max?: number): ByLengthResult {
-    let map: ReadonlyLengthMap
+    let words: ReadonlyLengthMap
 
     // Handle no arguments overload.
     if (typeof min !== 'number') {
       // Return the entire map.
-      map = toReadonlyLengthMap(this._byLengthMap, 1, MAX_INT)
+      words = toReadonlyLengthMap(this._byLengthMap, 1, MAX_INT)
 
     // Handle length overload.
     } else if (typeof max !== 'number') {
       // Return items matching min.
-      map = toReadonlyLengthMap(this._byLengthMap, min, min)
+      words = toReadonlyLengthMap(this._byLengthMap, min, min)
 
     // Handle min/max overload.
     } else {
       // Return items between min and max, inclusive.
-      map = toReadonlyLengthMap(this._byLengthMap, min, max)
+      words = toReadonlyLengthMap(this._byLengthMap, min, max)
     }
 
-    const stats = byLengthStats(map)
-    return { stats, words: map }
+    const stats = byLengthStats(words)
+    return { words, stats }
   }
 
   /**
