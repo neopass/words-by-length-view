@@ -5,24 +5,18 @@ Organizes a word list by the length of the words.
 ```javascript
 import { WordsByLengthView } from '@neopass/words-by-length-view'
 
-// Create a word list.
-let words = [
+// Use a set to avoid duplicate words.
+let words = new Set([
   'some', 'words', 'in', 'a', 'list',
   'to', 'be', 'organized', 'by', 'length', 'by', 'the', 'view',
   'this', 'can', 'also', 'be', 'a', 'promise', 'that', 'returns', 'a', 'list',
   'or', 'a', 'wordlist', 'list', 'builder', 'function',
-]
+])
 
-// Use a set to remove duplicates.
-const wordSet = new Set(words)
+// Create the view, converting the set to an array.
+const view = new WordsByLengthView([...words])
 
-// Convert the set to an array.
-words = [...wordSet]
-
-// Create the view.
-const view = new WordsByLengthView(words)
-
-// Allow the original words list to be garbage collected.
+// Allow the set to be garbage collected.
 words = null
 
 // Get all words by length.
@@ -30,7 +24,7 @@ const allWords = view.get()
 console.log(allWords)
 
 // Get words of length from 3 to 6, inclusive.
-const someWords = view.get((3, 6))
+const someWords = view.get(3, 6)
 console.log(someWords)
 ```
 
