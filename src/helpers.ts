@@ -59,17 +59,18 @@ export function toReadonlyLengthMap(map: LengthMap, min: number, max: number): R
 /**
  * Generate a length stats object.
  */
-export function byLengthStats(map: LengthMap): LengthStats {
+export function byLengthStats(map: ReadonlyLengthMap): LengthStats {
   let totalWords = 0
   let shortestWord = MAX_INT
   let longestWord = 0
 
   // Get the entries from the map.
-  const entries = [...map.entries()]
+  const entries = Object.entries(map)
 
   // Build a map of { word length => number of words }.
   const byLength = entries.reduce((map, entry) => {
-    const [wordLength, wordList] = entry
+    const [length, wordList] = entry
+    const wordLength = Number(length)
     map[wordLength] = wordList.length
 
     totalWords += wordList.length
