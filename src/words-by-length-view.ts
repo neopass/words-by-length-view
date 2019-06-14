@@ -4,6 +4,7 @@ import {
   ListBuilder,
   OnWord,
   LengthMap,
+  ByLengthResult,
 } from './types'
 
 import {
@@ -79,19 +80,19 @@ export class WordsByLengthView {
   /**
    * Return all words by length.
    */
-  get(): ReadonlyLengthMap
+  get(): ByLengthResult
   /**
    * Return all words of the given length.
    */
-  get(length: number): ReadonlyLengthMap
+  get(length: number): ByLengthResult
   /**
    * Return words of length [min, max].
    */
-  get(min: number, max: number): ReadonlyLengthMap
+  get(min: number, max: number): ByLengthResult
   /**
    * Overload handler.
    */
-  get(min?: number, max?: number): ReadonlyLengthMap {
+  get(min?: number, max?: number): ByLengthResult {
     let map: ReadonlyLengthMap
 
     // Handle no arguments overload.
@@ -110,13 +111,15 @@ export class WordsByLengthView {
       map = toReadonlyLengthMap(this._byLengthMap, min, max)
     }
 
-    return map
+    const stats = byLengthStats(map)
+    return { stats, words: map }
   }
 
   /**
    *
    */
   stats(): LengthStats {
-    return byLengthStats(this._byLengthMap)
+    const map = toReadonlyLengthMap(this._byLengthMap, 1, MAX_INT)
+    return byLengthStats(map)
   }
 }
