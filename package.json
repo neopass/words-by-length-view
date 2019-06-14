@@ -1,6 +1,6 @@
 {
   "name": "@neopass/words-view-by-length",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Provide a word list organized by word length",
   "main": "lib/index.js",
   "scripts": {
