@@ -11,7 +11,7 @@ export type LengthStats = {
 export type LengthMap = Map<number, string[]>
 export type ReadonlyLengthMap = Readonly<{[length: number]: readonly string[]}>
 
-export type ReadonlyResult = {
+export type ByLengthResult = {
   stats: LengthStats
   words: ReadonlyLengthMap
 }
