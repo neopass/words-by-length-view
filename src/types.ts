@@ -1,7 +1,7 @@
 export type OnWord = (word: string) => void|string
 export type ListBuilder = (onWord: OnWord) => Promise<void>
 
-export type LengthStats = {
+export interface LengthStats {
   readonly totalWords: number
   readonly shortestWord: number
   readonly longestWord: number
@@ -11,7 +11,7 @@ export type LengthStats = {
 export type LengthMap = Map<number, string[]>
 export type ReadonlyLengthMap = Readonly<{[length: number]: readonly string[]}>
 
-export type ByLengthResult = {
+export interface ByLengthResult {
   stats: LengthStats
   words: ReadonlyLengthMap
 }
