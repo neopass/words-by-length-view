@@ -31,9 +31,6 @@
   "dependencies": {
     "@babel/runtime-corejs2": "^7.4.5"
   },
-  "bin": {
-    "wordlist-gen": "bin/word-gen"
-  },
   "files": [
     "lib",
     "utils",
